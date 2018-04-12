@@ -1,0 +1,221 @@
+<apex:page renderAs="pdf" controller="VDPurchaseController">
+  <html>
+<head>
+<title>Verdia Purchase Order</title>
+<style>
+body{margin:0px; padding: 0px;} 
+.wrapper{ padding:10px; width:90%; margin:50px auto; }
+.logo{float: right; width:350px; margin-right:100px;}
+.table h2{text-transform: uppercase; font-size: 30px; font-family: arial; font-weight: normal; margin-top: 0px;}
+label{font-size:13px; font-family: arial; color:#000; font-weight: bold; line-height: 24px;}
+th{font-size:15px;font-family: arial; color:#000; font-weight: bold; line-height: 50px; }
+thead{  border-bottom: 1px solid #000;
+    margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+    <div class="wrapper">
+    <div style="clear:both; margin-bottom:50px; overflow:hidden;margin-left:60%;">
+       <img src="{!URLFOR($Resource.VDResources,'image/logo.png')}" height="50"/>
+    </div>
+    <table cellpadding="0" cellspacing="0" class="table" width="100%" style="font-size:12px">
+        <tr>
+            
+                    <td align="left" valign="top" width="60%">
+                        <h1 style="font-family:sans-serif;text-transform:uppercase;font-weight:500;">Purchase Order</h1>
+                        <label style="margin-left:100px;"><b>{!objAccount.Name}</b></label>
+                        <p style="margin-left:100px;">
+                            <b>{!objAccount.BillingStreet}</b><br/>
+                            <b>{!objAccount.BillingCity}</b>
+                            <b>{!accState}</b>
+                            <b>{!objAccount.BillingPostalCode}</b><br/>
+                            <b>{!objAccount.BillingCountry}</b>
+                        </p>
+                    </td>
+                        <td valign="top" align="left" width="20%">
+                <label style="margin-bottom:10px; display:block;"><b>Purchase Order Date</b> <br/>{!DAY(TODAY())} 
+                            {!CASE(MONTH(TODAY()),
+                                 1, "Jan",
+                                 2, "Feb",
+                                 3, "Mar",
+                                 4, "Apr",
+                                 5, "May",
+                                 6, "Jun",
+                                 7, "Jul",
+                                 8, "Aug",
+                                 9, "Sept",
+                                 10, "Oct",
+                                 11, "Nov",
+                                 "Dec")} 
+                            {!YEAR(TODAY())}</label>
+               
+                <label style="margin-bottom:10px; display:block;"><b>Delivery Date</b> <br/>
+                    {!DAY(objPurchase.VD_Delivery_Date__c)} 
+                            {!CASE(MONTH(objPurchase.VD_Delivery_Date__c),
+                                 1, "Jan",
+                                 2, "Feb",
+                                 3, "Mar",
+                                 4, "Apr",
+                                 5, "May",
+                                 6, "Jun",
+                                 7, "Jul",
+                                 8, "Aug",
+                                 9, "Sept",
+                                 10, "Oct",
+                                 11, "Nov",
+                                 "Dec")}  
+                            {!YEAR(objPurchase.VD_Delivery_Date__c)} </label>
+                <label style="margin-bottom:10px; display:block;"><b>Purchase Order Number</b> <br/> {!objPurchase.name}</label>
+                <label style="margin-bottom:10px; display:block;"><b>Reference</b> <br/> {!objPurchase.VD_Opportunity_Name__c}</label>
+                
+                
+                <label><b>ABN</b> <br/> {!objPOData.VD_ABN__c}</label>
+                
+                
+            </td>
+           
+                <td valign="top" align="left" width="20%"> 
+                    <label>
+                        {!objPOData.VD_Company_Name__c}<br/> <apex:outputField value="{!objPOData.VD_Address__c}"/> <br/>
+                       
+                            {!objPOData.VD_City_State_PostCode__c}<br/>{!objPOData.VD_Country__c}
+                    </label>
+                </td>
+           
+           </tr>
+
+
+
+        <tr>
+            <td colspan="3">
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:100px;border-bottom:1px solid #ccc;">
+                <thead>
+                <tr>
+                    <th valign="top" align="left" width="50%">Description</th>
+                    <th valign="top" align="right" width="10%">Quantity</th>
+                    <th valign="top" align="right" width="10%">Unit Price</th>
+                    <th valign="top" align="center" width="10%">GST</th>
+                    <th valign="top" align="right" width="10%">Amount AUD</th>
+                </tr>
+            </thead>    
+            <tbody>
+                <tr><td colspan="5"><hr/></td></tr>
+                <apex:repeat value="{!lstPurchaseItem}" var="OrderItemVar">
+                    <tr>
+                        <td valign="top" align="left" width="50%"> <label>{!OrderItemVar.VD_Description__c}</label>
+                        </td>
+                        <td valign="top" align="right" width="10%"><label style="float:right">{!OrderItemVar.VD_Quantity__c}</label></td>
+                        <td valign="top" align="right" width="10%"><label style="float:right">
+                            <apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!OrderItemVar.VD_Unit_Price__c}"/></apex:outputText>
+                            </label></td>
+                        <td valign="top" align="center" width="10%"> <label>{!GST}% </label></td>
+                        <td valign="top" align="left" width="10%">
+                            <label style="float:right;margin-right:5px"> 
+                                <apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!OrderItemVar.VD_Amount__c}"/></apex:outputText>
+                           </label>
+                        </td>
+                        </tr>
+                        <tr><td colspan="5">&nbsp;</td></tr>
+                </apex:repeat>
+           </tbody>
+            </table>
+        </td>
+        </tr>
+        <tr>
+            <td colspan="5" >
+                <table  width="30%" cellpadding="2" cellspacing="3" align="right" >
+                        
+                        <tr>
+                            <td colspan="4" align="center" valign="top" width="10%"><label style="margin-left:30px;">Subtotal</label></td>
+                            <td width="10%" align="center" valign="top">
+                                <label style="float:right">
+                                     <apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!objPurchase.VD_SubTotal__c}"/></apex:outputText>
+                                </label>
+                            </td>
+                        </tr>
+                    
+                
+                        <tr>
+                            <td colspan="4" align="center" valign="top" width="10%"><label style="font-size:11px;">Total GST {!GST}% </label></td>
+                            <td width="10%" align="center" valign="top"><label style="float:right">
+                                <apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!objPurchase.VD_Total_GST__c}"/></apex:outputText>
+                                </label></td>
+                        </tr>
+                
+                        <tr><td colspan="5"> <hr/> </td></tr>
+                        <tr>
+                            <td colspan="4" align="center" valign="top" width="10%"><label style="font-size:15px;">Total AUD</label></td>
+                            <td width="10%" align="center" valign="top"><label style="float:right">
+                                <apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!objPurchase.VD_Total_AUD__c}"/></apex:outputText>
+                                </label></td>
+                        </tr>
+                    
+                </table> 
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            <td colspan="5"><hr style="margin-top:100px;"/></td>
+        </tr>
+
+        <tr>
+            <td colspan="5">
+            <table  width="100%" cellpadding="0" cellspacing="0">
+        
+        <tr>
+           
+            <td colspan="5">
+            <table cellpadding="0"  cellspacing="2">
+                <tr>
+                    <th><h2><b style="text-transform:uppercase">Delivery Details</b></h2></th>
+                </tr>
+                <tr>
+                <td valign="top" width="30%" align="left">
+                    <label  style="border-right:1px solid #ccc; margin-right:15px;">
+                        <b>Delivery Address</b> <br/>
+                        {!objPurchase.VD_Delivery_Street__c}<br/>
+                        {!objPurchase.VD_Delivery_City__c}
+                        {!poState}
+                        {!objPurchase.VD_Delivery_Postal_Code__c}<br/>
+                        {!objPurchase.VD_Delivery_Country__c}
+                    </label>
+                </td>
+                <td width="3%" align="center" valign="top"> 
+                    <img src="{!URLFOR($Resource.VDResources,'image/vertical-border.jpg')}"/>
+                </td>
+                <td valign="top" width="30%" align="left">
+                    <label>
+                        <b>Attention </b><br/>
+                        {!objPurchase.VD_Attention__c}<br/><br/>
+                        <b>Telephone</b><br/>
+                        {!objPurchase.VD_Telephone__c}
+                    </label>
+                </td>
+                <td width="3%" align="center" valign="top">
+                    <img src="{!URLFOR($Resource.VDResources,'image/vertical-border.jpg')}"/>
+                </td>
+                <td valign="top" width="50%" align="left">
+                        <label>
+                        <b>Delivery Instructions</b> <br/>
+                        {!objPurchase.VD_Delivery_Instructions__c}
+                    </label>
+                </td>
+                </tr>
+            </table>
+            </td>
+           
+        </tr>
+
+</table>
+</td>
+</tr>
+</table>
+</div>
+</body>
+</html>
+
+</apex:page>
+                      
