@@ -67,7 +67,7 @@ thead{  border-bottom: 1px solid #000;
                                  "Dec")}  
                             {!YEAR(objPurchase.VD_Delivery_Date__c)} </label>
                 <label style="margin-bottom:10px; display:block;"><b>Purchase Order Number</b> <br/> {!objPurchase.name}</label>
-                <label style="margin-bottom:10px; display:block;"><b>Reference</b> <br/> {!objPurchase.VD_Opportunity_Name__c}</label>
+                <label style="margin-bottom:10px; display:block;"><b>Reference</b> <br/> {!objPurchase.Reference_VF__c}</label>
                 
                 
                 <label><b>ABN</b> <br/> {!objPOData.VD_ABN__c}</label>
@@ -201,6 +201,9 @@ thead{  border-bottom: 1px solid #000;
                         <label>
                         <b>Delivery Instructions</b> <br/>
                         {!objPurchase.VD_Delivery_Instructions__c}
+                        <br/>
+                        <br/>
+                        <b> Please send all invoices to <u>partnerinvoicing@verdia.com.au</u> and ensure the invoice references the Purchase Order Number above</b>
                     </label>
                 </td>
                 </tr>
@@ -218,4 +221,3 @@ thead{  border-bottom: 1px solid #000;
 </html>
 
 </apex:page>
-                      
